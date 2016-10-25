@@ -13,6 +13,8 @@ Written by: hishion
 
 
 ```html
+<input type="file" name="files"  id="j-file" multiple>
+
 <!-- mbSlider Javascript file -->
 <script src="mbUploadify.js"></script>
 ```
@@ -40,7 +42,7 @@ var upload = new mbUploadify({
 ```
 var upload = new mbUploadify({
     /* input file控件 */
-    file: document.getElementById('j-file'),
+    file: '',
     /* 上传类型, 验证时需要*/
     type: 'image',
     /* 最多上传文件数量 */
@@ -51,8 +53,9 @@ var upload = new mbUploadify({
     rendAsType: 'url',
     /*ajax 上传的 name*/
     uploadName: 'mbUploadify',
+
     /*ajax 上传地址*/
-    url: 'upload.php',
+    url: '',
     /*错误提示信息*/
     message: {
         type: '类型不对!',
