@@ -65,39 +65,30 @@ var upload = new mbUploadify({
     },
     /*上传中止*/
     abort: function(){
-        console.log('abort!')
     },
     /*上传失败*/
     error: function(file, msg){
-        console.log(file, msg)
     },
     /*上传开始*/
-    loadstart: function(e){
-        console.log('loadstart!')
+    loadstart: function(){
     },
     /*上传进度*/
     progress: function(){
-        console.log('progress!')
     },
     /*上传成功*/
-    load: function(e){
-        document.getElementById('result').innerHTML += '&lt;img src="'+ e.target.result +'"&gt;';
+    load: function(){
     },
     /*上传完成，不管成功失败*/
     loadend: function(){
-        console.log('loadend!');
     },
     /*ajax上传成功*/
-    uploadSuccess: function(res){
-        console.log(res);
+    uploadSuccess: function(){
     },
     /*ajax上传失败*/
     uploadFailed: function(){
-        console.log('upload failed!');
     },
     /*ajax上传完成*/
     uploadComplete: function(){
-        console.log('upload completed!');
     }
 });
 ```
