@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>mbUploadify html5移动端文件上传插件</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+    width: 90%;
+    margin: 20px auto;
+}
+pre{
+    background: #e5e5e5;
+    font: 14px/1.5  Arial, Helvetica, sans-serif;
+    padding: 10px 20px;
+    word-break: break-all;
+    white-space: pre-wrap;
+}
+#preview{
+    padding: 10px 0;
+}
+#preview img{
+    max-height: 50px;
+}
+#msg{
+    color: red;
+}
+</style>
+</head>
+<body>
+    
+<h3>mbUploadify html5移动端上传小Demo (php)</h3>
+<p>文件上传</p>
+<input type="file" name="files"  id="j-file" multiple>
+<div id="preview"></div>
+<div id="msg"></div>
+
+<pre>
+var upload = new mbUploadify({
+        file: document.getElementById('j-file'),
+        /*ajax 上传地址*/
+        url: 'upload.php',
+        /*ajax 提交的字段名称*/
+        /*上传中止*/
+        abort: function(){
+            console.log('abort!')
+        },
+        /*上传失败*/
+        error: function(file, msg){
+            console.log(file, msg)
+        },
+        /*上传开始*/
+        loadstart: function(e){
+            console.log('loadstart!')
+        },
+        /*上传进度*/
+        progress: function(){
+            console.log('progress!')
+        },
+        /*上传成功*/
+        load: function(e){
+            document.getElementById('result').innerHTML += '&lt;img src="'+ e.target.result +'"&gt;';
+        },
+        /*上传完成，不管成功失败*/
+        loadend: function(){
+            console.log('loadend!');
+        },
+        /*ajax上传成功*/
+        uploadSuccess: function(res){
+            console.log(res);
+        },
+        /*ajax上传失败*/
+        uploadFailed: function(){
+            console.log('upload failed!');
+        },
+        /*ajax上传完成*/
+        uploadComplete: function(){
+            console.log('upload completed!');
+        }
+});
+</pre>
+
+<script src="mbUploadify.min.js"></script>
+
+<script>
+
+var upload = new mbUploadify({
+    file: document.getElementById('j-file'),
+    /*ajax 上传地址*/
+    url: 'mbUploadify.php',
+    /*ajax 提交的字段名称*/
+    uploadName: 'mypic',
+    /*上传中止*/
+    abort: function(){
+        console.log('abort!')
+    },
+    /*上传失败*/
+    error: function(file, msg){
+        document.getElementById('msg').innerHTML = msg;
+        console.log(file, msg)
+    },
+    /*上传开始*/
+    loadstart: function(e){
+        console.log('loadstart!')
+    },
+    /*上传进度*/
+    progress: function(){
+        console.log('progress!')
+    },
+    /*上传成功*/
+    load: function(e){
+        document.getElementById('preview').innerHTML += '<img src="'+ e.target.result +'">';
+    },
+    /*上传完成，不管成功失败*/
+    loadend: function(){
+        console.log('loadend!');
+    },
+    /*ajax上传成功*/
+    uploadSuccess: function(res){
+        console.log(res);
+    },
+    /*ajax上传失败*/
+    uploadFailed: function(){
+        console.log('upload failed!');
+    },
+    /*ajax上传完成*/
+    uploadComplete: function(){
+        console.log('upload completed!');
+    }
+});
+
+</script>
+</body>
+</html>
