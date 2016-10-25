@@ -120,7 +120,7 @@
                 //html5中reader对象解析类型 可选 [string | text | url]
                 rendAsType: 'url',
                 //上传时后端 接收的 name
-                uploadName: 'mbUploadify',
+                uploadName: '',
                 //上传地址
                 url: '',
                 //错误提示信息!
@@ -170,9 +170,9 @@
                     this.once = true;
                     self.options.uploadComplete();
                 }
-            }
-            xhrData.append(self.options.uploadName, file); 
-            xhr.open("POST", self.options.url || self.file.getAttribute('data-url'), true);    
+            };
+            xhrData.append(self.options.uploadName || self.file.name, file); 
+            xhr.open("POST", self.options.url, true);    
             xhr.send(xhrData);
         }
     };

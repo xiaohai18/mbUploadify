@@ -16,7 +16,7 @@ Written by: hishion
 <input type="file" name="files"  id="j-file" multiple>
 
 <!-- mbSlider Javascript file -->
-<script src="mbUploadify.js"></script>
+<script src="mbUploadify.min.js"></script>
 ```
 
 
@@ -27,8 +27,6 @@ var upload = new mbUploadify({
         file: document.getElementById('j-file'),
         /*ajax 上传地址*/
         url: 'mbUploadify.php',
-        /*ajax 提交的字段名称*/
-        uploadName: 'mypic',
         /*ajax上传成功*/
         uploadSuccess: function(res){
             console.log(res);
@@ -52,8 +50,7 @@ var upload = new mbUploadify({
     /* html5中reader对象解析类型 可选 [string | text | url] */
     rendAsType: 'url',
     /*ajax 上传的 name*/
-    uploadName: 'mbUploadify',
-
+    uploadName: '',
     /*ajax 上传地址*/
     url: '',
     /*错误提示信息*/
