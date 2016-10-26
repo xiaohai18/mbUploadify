@@ -44,7 +44,7 @@ var upload = new mbUploadify({
     /* 上传类型, 验证时需要*/
     type: 'image',
     /* 最多上传文件数量 */
-    maximum: 3,
+    maximum: 5,
     /* 单个文件最大大小 2M */
     size: 1024*1024*2,
     /* html5中reader对象解析类型 可选 [string | text | url] */
@@ -60,6 +60,10 @@ var upload = new mbUploadify({
         maximum: '上传文件数量太多!',
         other: '其它网络错误!'
     },
+    /*是否多选, maxinum>1有效*/
+    isMultiple: true,
+    /*是否允许提交重复的文件*/
+    isAllowSame: false,
     /*上传中止*/
     abort: function(){
     },

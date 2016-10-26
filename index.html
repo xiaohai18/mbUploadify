@@ -44,6 +44,10 @@ pre{
 var upload = new mbUploadify({
     /*input file控件对象*/
     file: document.getElementById('j-file'),
+    /*是否允许上传相同的文件*/
+    isAllowSame: true,
+    /*是否多选*/
+    isMultiple: true,
     /*ajax 上传地址*/
     url: 'mbUploadify.php',
     /*ajax 提交的字段名称*/
@@ -90,12 +94,16 @@ var upload = new mbUploadify({
 
 <p>更多参数与下载请前往  <a href="https://github.com/hishion/mbUploadify" target="_blank">github</a></p>
 
-<script src="mbUploadify.min.js"></script>
+<script src="mbUploadify.min.js?v"></script>
 
 <script>
 
 var upload = new mbUploadify({
     file: document.getElementById('j-file'),
+    /*是否允许上传相同的文件*/
+    isAllowSame: true,
+    /*是否多选*/
+    isMultiple: true,
     /*ajax 上传地址*/
     url: 'mbUploadify.php',
     /*上传中止*/

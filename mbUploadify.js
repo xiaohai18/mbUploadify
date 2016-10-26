@@ -26,7 +26,7 @@
                 throw new Error('browser does not support FileReader!');
             }
 
-            if(this.max > 1){
+            if(this.max > 1 && this.options.isMultiple){
                 this.file.setAttribute('multiple', true);
             }else{
                 this.file.removeAttribute('multiple');
@@ -44,6 +44,8 @@
                 return msg['size'];
             }else if(reg.test(file.type) === false){
                 return msg['type'];
+            }else if(!this.options.isAllowSame && this.cache[file.lastModified] === 1){
+                return msg['same'];
             }else{
                 this.cache[file.lastModified] = 1;
                 return null;
@@ -62,8 +64,7 @@
             return count;
         },
         /*
-            由于绑定的是change事件，因此重复上传同一文件将不会被执行回调
-            如需用户重复上传同一文件, 可在回调中将 this.value = ''。
+            开始上传文件,并验证
         */
         bindEvent: function(){
             var self = this;
@@ -102,7 +103,10 @@
                         }(ret));
                     }
                 }
-                //this.value = '';
+                if(self.options.isAllowSame){
+                    this.dataValue = this.value;
+                    this.value     = '';
+                }
             }
             
             this.file.addEventListener('change', uploadstart, false);
@@ -114,7 +118,7 @@
                 //上传类型
                 type: 'image',
                 //上传最多个数
-                maximum: 3,
+                maximum: 5,
                 //文件大小 2M
                 size: 1024*1024*2,
                 //html5中reader对象解析类型 可选 [string | text | url]
@@ -128,8 +132,13 @@
                     type: '类型不对!',
                     size: '文件太大',
                     maximum: '上传文件数量太多!',
+                    same: '不能上传相同的文件!',
                     other: '其它网络错误!'
                 },
+                //是否多选
+                isMultiple: true,
+                //是否允许提交重复的文件
+                isAllowSame: false,
                 //ajax上传成功 回调
                 uploadSuccess: function(){},
                 //ajax上传失败 回调
