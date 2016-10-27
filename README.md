@@ -40,9 +40,10 @@ var upload = new mbUploadify({
 
 ```html
 <form action="mbUploadify.php" method="post">
-    <label for="j-file2" class="mbUploadify">
+    <label for="j-file2" class="mbUploadify" id="j-dropArea">
         拖拽文件上传
         <input type="file" name="files" id="j-file2"  multiple>
+
     </label>
     <!--   附带提交其它数据   -->
     <input type="hidden" name="email" value="506713930@qq.com">
@@ -56,7 +57,7 @@ var upload = new mbUploadify({
 ```javascript
 var upload2 = new mbUploadify(document.querySelector('form'), {
         /*是否支持拖拽上传文件*/
-        isDrop: true
+        dropElement: document.getElementById('j-dropArea'),
         ......
     });
 ```
@@ -95,8 +96,8 @@ var upload = new mbUploadify(form, {
     //是否允许提交重复的文件
     isAllowSame: false,
     
-    //是否支持拖拽上传文件
-    isDrop: false,
+    //文件拖拽上传区域对象 null表示不支持
+    dropElement: null,
     //文件拖拽dragenter事件回调
     dragenter: function(){},
     //文件拖拽dragleave事件回调
