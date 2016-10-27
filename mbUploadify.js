@@ -10,17 +10,30 @@
     };
 
     Uploadify.prototype ={
-        init: function(config){
-            this.setConfig(config);
-            this.file  = this.options['file'];
-            this.max   = this.options['maximum'];
-            this.size  = this.options['size'];
-            this.type  = this.options['type'];
-            this.cache = {};
+        /*
+            两个参数时:  form对象 与 config对象
+            一个参数时:  config对象
+        */
+        init: function(){
+            //传入的是form 与 config
+            if(arguments[0].tagName && arguments[0].nodeType === 1){
+                this.element = arguments[0];
+                this.setConfig(arguments[1] || {});
+            }else{
+                //传入config
+                this.setConfig(arguments[0]);
+            }
+
+            this.file    = this.options['file'] || this.element && this.element.querySelector('input[type=file]');
+            this.url     = this.options['url']  || this.element && this.element.action;
+            this.max     = this.options['maximum'];
+            this.size    = this.options['size'];
+            this.type    = this.options['type'];
+            this.cache   = {};
 
             if(!this.file){
                 throw new Error("file does not exist!");
-            }else if(!this.options.url){
+            }else if(!this.url){
                 throw new Error("url cannot be empty!");
             }else if(typeof FileReader === 'undefined'){
                 throw new Error('browser does not support FileReader!');
@@ -67,50 +80,96 @@
             开始上传文件,并验证
         */
         bindEvent: function(){
-            var self = this;
-            var cb   = ['abort', 'loadstart', 'progress', 'loadend'];
-            var msg  = self.options.message;
+            var self = this, opt = self.options, msg = opt.message,
+            cb  = ['abort', 'loadstart', 'progress', 'loadend'];
             
             function uploadstart(){
                 var files = this.files;
+
                 if(files.length > self.max || self.getUploadNum() >= self.max){
-                    self.options['error'](files, msg['maximum']);
+                    opt['error'](files, msg['maximum']);
                 }else{
                     for(var k = 0; k < files.length; k++){
-                        var ret    = files[k];
-                        var reader = new FileReader();
-                        var err    = self.verify(ret);
+                        var ret = files[k], err = self.verify(ret),
+                        reader = new FileReader();
+
                         if(err){
-                            self.options['error'](ret, err);
+                            opt['error'](ret, err);
                         }else{
-                            switch(self.options['rendAsType'].toLowerCase()){
+                            switch(opt['rendAsType'].toLowerCase()){
                                 case 'string': reader.readAsBinaryString(files[k]);break;
                                 case 'text': reader.readAsText(files[k]);break;
                                 default: reader.readAsDataURL(files[k]);
                             }
                         }
+
                         for(var i = 0;  i < cb.length; i++){
-                            reader.addEventListener(cb[i], self.options[cb[i]], false);
+                            reader.addEventListener(cb[i], opt[cb[i]], false);
                         }
+
                         (function(ret){
                             reader.addEventListener('error', function(e){
-                                self.options['error'](ret, err || msg['other']);
+                                opt['error'](ret, err || msg['other']);
                             }, false);
                             reader.addEventListener('load', function(e){
                                 self.ajaxUpload(ret);
-                                self.options['load']( e, ret);
+                                opt['load']( e, ret);
                             })
                         }(ret));
                     }
                 }
+            }
+
+            if(opt.isDrop){
+                self.on(document, 'dragenter', opt.dragenter);
+                self.on(document, 'dragleave', opt.dragleave);
+                self.on(document, 'dragover', function(e){
+                    e.preventDefault();
+                    opt.dragover.call(this, e);
+                });
+                self.on(document, 'drop', function(e){
+                    e.preventDefault();
+                    uploadstart.call(e.dataTransfer);
+                    opt.drop.call(this, e);
+                });
+            }
+            
+            self.on(self.file, 'change', function(){
+                uploadstart.call(this);
                 if(self.options.isAllowSame){
                     this.dataValue = this.value;
                     this.value     = '';
                 }
-            }
-            
-            this.file.addEventListener('change', uploadstart, false);
-        },  
+            });
+        },
+        /*ajax 上传*/
+        ajaxUpload:  function(file){
+            var self = this;
+            var xhr  = new XMLHttpRequest();
+            var xhrData = new FormData(self.element || null);
+            xhr.lastModified = file.lastModified;
+            xhr.onreadystatechange = function(){
+                var response = this.responseText;
+                if(this.readyState == 4){
+                    if(this.status < 300 && this.status >= 200){
+                        self.options.uploadSuccess.call(this, response);
+                    }else{
+                        self.cache[this.lastModified] = null;
+                        self.options.uploadFailed.call(this);
+                    }
+                }
+                if(!this.once){
+                    this.once = true;
+                    self.options.uploadComplete();
+                }
+            };
+            xhrData.append(self.options.uploadName || self.file.name, file); 
+            xhr.open("POST", self.url, true);    
+            xhr.send(xhrData);
+        },
+        on: function(obj, event, callback){
+            return obj.addEventListener(event, callback, false);
+        },
         setConfig: function(config){
             var options = {
                 //input file控件对象
@@ -139,6 +198,18 @@
                 isMultiple: true,
                 //是否允许提交重复的文件
                 isAllowSame: false,
+
+                //是否支持拖拽上传文件
+                isDrop: false,
+                //文件拖拽dragenter事件回调
+                dragenter: function(){},
+                //文件拖拽dragleave事件回调
+                dragleave: function(){},
+                //文件拖拽dragover事件回调
+                dragover: function(){},
+                //文件拖拽drop事件回调
+                drop: function(){},
+
                 //ajax上传成功 回调
                 uploadSuccess: function(){},
                 //ajax上传失败 回调
@@ -158,31 +229,6 @@
                 }
             };
             this.options = options;
-        },
-        /*ajax 上传*/
-        ajaxUpload:  function(file){
-            var self = this;
-            var xhr  = new XMLHttpRequest();
-            var xhrData = new FormData();
-            xhr.lastModified = file.lastModified;
-            xhr.onreadystatechange = function(){
-                var response = this.responseText;
-                if(this.readyState == 4){
-                    if(this.status < 300 && this.status >= 200){
-                        self.options.uploadSuccess.call(this, response);
-                    }else{
-                        self.cache[this.lastModified] = null;
-                        self.options.uploadFailed.call(this);
-                    }
-                }
-                if(!this.once){
-                    this.once = true;
-                    self.options.uploadComplete();
-                }
-            };
-            xhrData.append(self.options.uploadName || self.file.name, file); 
-            xhr.open("POST", self.options.url, true);    
-            xhr.send(xhrData);
         }
     };
 

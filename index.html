@@ -10,126 +10,147 @@ body{
     width: 90%;
     margin: 20px auto;
 }
+
+h1{
+    font-style: 28px;
+}
+h3{
+    font-weight: 700;
+    color: #666;
+    font-size: 21px;
+    border-bottom: 1px dashed #ccc;
+    line-height: 2;
+}
+.mbUploadify{
+    border: 3px dashed silver;
+    text-align: center;
+    padding: 50px 0;
+    min-width: 200px;
+    max-width: 500px;
+    text-align: center;
+    font-size: 24px;
+    color: #ddd;
+    display: block;
+    margin: 0 auto;
+}
+.mbUploadify input[type=file]{
+    display: none;
+}
+
 pre{
     background: #e5e5e5;
     font: 13px/1.6em 'Lucida Console','monospace','Consolas';
     padding: 10px 20px;
     word-break: break-all;
     white-space: pre-wrap;
+    margin-bottom: 30px;
 }
-#preview{
+
+.preview{
     padding: 10px 0;
 }
-#preview img{
+.preview img{
     max-height: 50px;
 }
-#msg{
+.msg{
     color: red;
 }
+
 </style>
+<script src="mbUploadify.js"></script>
+
 </head>
 <body>
     
-<h3>mbUploadify html5移动端上传小Demo (php)</h3>
-<p>文件上传</p>
-<input type="file" name="files"  id="j-file" multiple>
-<div id="preview"></div>
-<div id="msg"></div>
+<h1>mbUploadify html5移动端上传小Demo (php)</h1>
+
+
+
+
+
+
+
+
+<h3>案例一</h3>
+<input type="file" name="files"  id="j-file"  multiple>
+<div id="preview1" class="preview"></div>
+<div id="msg1" class="msg"></div>
+<script>
+var upload1 = new mbUploadify({
+    file: document.getElementById('j-file'),
+    /*ajax 上传地址*/
+    url: 'mbUploadify.php',
+    load: function(e){
+        document.getElementById('preview1').innerHTML += '<img src="'+ e.target.result +'">';
+    },
+     /*上传失败*/
+    error: function(file, msg){
+        document.getElementById('msg1').innerHTML = msg;
+        console.log(file, msg)
+    },
+    /*ajax上传成功*/
+    uploadSuccess: function(res){
+        console.log(res);
+    }
+});
+</script>
+
 
 <pre>
 &lt;input type="file" name="files"  id="j-file" multiple&gt;
 
-
 &lt;script&gt;
-var upload = new mbUploadify({
-    /*input file控件对象*/
-    file: document.getElementById('j-file'),
-    /*是否允许上传相同的文件*/
-    isAllowSame: true,
-    /*是否多选*/
-    isMultiple: true,
-    /*ajax 上传地址*/
-    url: 'mbUploadify.php',
-    /*ajax 提交的字段名称*/
-    uploadName: '',
-    /*上传中止*/
-    abort: function(){
-        console.log('abort!')
-    },
-    /*上传失败*/
-    error: function(file, msg){
-        console.log(file, msg)
-    },
-    /*上传开始*/
-    loadstart: function(e){
-        console.log('loadstart!')
-    },
-    /*上传进度*/
-    progress: function(){
-        console.log('progress!')
-    },
-    /*上传成功*/
-    load: function(e){
-        document.getElementById('result').innerHTML += '&lt;img src="'+ e.target.result +'"&gt;';
-    },
-    /*上传完成，不管成功失败*/
-    loadend: function(){
-        console.log('loadend!');
-    },
-    /*ajax上传成功*/
-    uploadSuccess: function(res){
-        console.log(res);
-    },
-    /*ajax上传失败*/
-    uploadFailed: function(){
-        console.log('upload failed!');
-    },
-    /*ajax上传完成*/
-    uploadComplete: function(){
-        console.log('upload completed!');
-    }
-});
+    var upload = new mbUploadify({
+        /*input file控件对象*/
+        file: document.getElementById('j-file'),
+        /*ajax 上传地址*/
+        url: 'mbUploadify.php',
+        /*ajax 提交的字段名称*/
+        uploadName: '',
+
+        /*上传成功*/
+        load: function(e){
+            document.getElementById('result').innerHTML += '&lt;img src="'+ e.target.result +'"&gt;';
+        },
+        /*上传完成，不管成功失败*/
+        loadend: function(){
+            console.log('loadend!');
+        },
+        /*ajax上传成功*/
+        uploadSuccess: function(res){
+            console.log(res);
+        },
+        /*ajax上传失败*/
+        uploadFailed: function(){
+            console.log('upload failed!');
+        },
+        ......
+    });
 &lt;/script&gt;
 </pre>
 
-<p>更多参数与下载请前往  <a href="https://github.com/hishion/mbUploadify" target="_blank">github</a></p>
 
-<script src="mbUploadify.min.js?v"></script>
+
+<h3>案例二</h3>
+<form action="mbUploadify.php" method="post">
+    <label for="j-file2" class="mbUploadify">
+        拖拽文件上传
+        <input type="file" name="files" id="j-file2"  multiple>
+    </label>
+    <!--   附带提交其它数据   -->
+    <input type="hidden" name="email" value="506713930@qq.com">
+</form>
+<div id="preview2" class="preview"></div>
+<div id="msg2" class="msg"></div>
+
 
 <script>
-
-var upload = new mbUploadify({
-    file: document.getElementById('j-file'),
-    /*是否允许上传相同的文件*/
-    isAllowSame: true,
-    /*是否多选*/
-    isMultiple: true,
-    /*ajax 上传地址*/
-    url: 'mbUploadify.php',
-    /*上传中止*/
-    abort: function(){
-        console.log('abort!')
-    },
-    /*上传失败*/
-    error: function(file, msg){
-        document.getElementById('msg').innerHTML = msg;
-        console.log(file, msg)
-    },
-    /*上传开始*/
-    loadstart: function(e){
-        console.log('loadstart!')
-    },
-    /*上传进度*/
-    progress: function(){
-        console.log('progress!')
-    },
+var upload2 = new mbUploadify(document.querySelector('form'), {
+    /*是否支持拖拽上传文件*/
+    isDrop: true,
     /*上传成功*/
     load: function(e){
-        document.getElementById('preview').innerHTML += '<img src="'+ e.target.result +'">';
-    },
-    /*上传完成，不管成功失败*/
-    loadend: function(){
-        console.log('loadend!');
+        document.getElementById('preview2').innerHTML += '<img src="'+ e.target.result +'">';
     },
     /*ajax上传成功*/
     uploadSuccess: function(res){
@@ -139,12 +160,46 @@ var upload = new mbUploadify({
     uploadFailed: function(){
         console.log('upload failed!');
     },
+    /*上传失败*/
+    error: function(file, msg){
+        document.getElementById('msg2').innerHTML = msg;
+        console.log(file, msg)
+    },
     /*ajax上传完成*/
     uploadComplete: function(){
         console.log('upload completed!');
     }
 });
-
 </script>
+
+<pre>
+&lt;form action="mbUploadify.php" method="post"&gt;
+    &lt;label for="j-file" class="mbUploadify"&gt;
+        文件上传
+        &lt;input type="file" name="files"  id="j-file"  multiple&gt;
+    &lt;/label&gt;
+    &lt;!--   other   --&gt;
+    &lt;input type="hidden" name="email" value="506713930@qq.com"&gt;
+&lt;/form&gt;
+&lt;/pre&gt;
+
+&lt;script&gt;
+    //传入form对象, 可附带其它数据一并提交
+    var upload = new mbUploadify(document.querySelector('form'), {
+        ...
+        /*最多上传文件个数*/
+        maximum: true,
+        /*是否支持拖拽上传文件*/
+        isDrop: true
+        ...
+    });
+&lt;/script&gt;
+</pre>
+
+
+
+<p>更多参数与下载请前往  <a href="https://github.com/hishion/mbUploadify" target="_blank">github</a></p>
+
+
 </body>
 </html>
