@@ -57,12 +57,12 @@ pre{
 }
 
 </style>
-<script src="mbUploadify.js"></script>
+<script src="mbUploadify.js?vxxx"></script>
 
 </head>
 <body>
     
-<h1>mbUploadify html5移动端上传小Demo (php)</h1>
+<h1>mbUploadify html5移动端文件上传插件 (php)</h1>
 
 
 
@@ -133,7 +133,7 @@ var upload1 = new mbUploadify({
 
 <h3>案例二</h3>
 <form action="mbUploadify.php" method="post">
-    <label for="j-file2" class="mbUploadify">
+    <label for="j-file2" class="mbUploadify" id="j-dropArea">
         拖拽文件上传
         <input type="file" name="files" id="j-file2"  multiple>
     </label>
@@ -146,8 +146,8 @@ var upload1 = new mbUploadify({
 
 <script>
 var upload2 = new mbUploadify(document.querySelector('form'), {
-    /*是否支持拖拽上传文件*/
-    isDrop: true,
+    /*文件拖拽上传区域对象 null表示不支持*/
+    dropElement: document.getElementById('j-dropArea'),
     /*上传成功*/
     load: function(e){
         document.getElementById('preview2').innerHTML += '<img src="'+ e.target.result +'">';
@@ -174,7 +174,7 @@ var upload2 = new mbUploadify(document.querySelector('form'), {
 
 <pre>
 &lt;form action="mbUploadify.php" method="post"&gt;
-    &lt;label for="j-file" class="mbUploadify"&gt;
+    &lt;label for="j-file" class="mbUploadify" id="j-dropArea"&gt;
         文件上传
         &lt;input type="file" name="files"  id="j-file"  multiple&gt;
     &lt;/label&gt;
@@ -189,8 +189,8 @@ var upload2 = new mbUploadify(document.querySelector('form'), {
         ...
         /*最多上传文件个数*/
         maximum: true,
-        /*是否支持拖拽上传文件*/
-        isDrop: true
+        /*文件拖拽上传区域对象 null表示不支持*/
+        dropElement: document.getElementById('j-dropArea'),
         ...
     });
 &lt;/script&gt;

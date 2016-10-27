@@ -57,10 +57,10 @@
                 return msg['size'];
             }else if(reg.test(file.type) === false){
                 return msg['type'];
-            }else if(!this.options.isAllowSame && this.cache[file.lastModified] === 1){
+            }else if(!this.options.isAllowSame && this.cache[file.lastModifiedDate-0] === 1){
                 return msg['same'];
             }else{
-                this.cache[file.lastModified] = 1;
+                this.cache[file.lastModifiedDate-0] = 1;
                 return null;
             }
         },
@@ -120,18 +120,8 @@
                 }
             }
 
-            if(opt.isDrop){
-                self.on(document, 'dragenter', opt.dragenter);
-                self.on(document, 'dragleave', opt.dragleave);
-                self.on(document, 'dragover', function(e){
-                    e.preventDefault();
-                    opt.dragover.call(this, e);
-                });
-                self.on(document, 'drop', function(e){
-                    e.preventDefault();
-                    uploadstart.call(e.dataTransfer);
-                    opt.drop.call(this, e);
-                });
+            if(opt.dropElement){
+                self.bindDropEvent(uploadstart);
             }
             
             self.on(self.file, 'change', function(){
@@ -142,11 +132,28 @@
                 }
             });
         },
+
+        /*绑定拖拽上传事件*/
+        bindDropEvent: function(uploadstart){
+            var opt = this.options;
+            this.on(document, 'dragenter', opt.dragenter);
+            this.on(document, 'dragleave', opt.dragleave);
+            this.on(opt.dropElement, 'dragover', function(e){
+                e.preventDefault();
+                opt.dragover.call(this, e);
+            });
+            this.on(opt.dropElement, 'drop', function(e){
+                e.preventDefault();
+                e.stopPropagation();
+                uploadstart.call(e.dataTransfer);
+                opt.drop.call(this, e);
+            });
+        },
         /*ajax 上传*/
         ajaxUpload:  function(file){
             var self = this;
             var xhr  = new XMLHttpRequest();
-            var xhrData = new FormData(self.element || null);
+            var xhrData = self.element ? new FormData(self.element) : new FormData();
             xhr.lastModified = file.lastModified;
             xhr.onreadystatechange = function(){
                 var response = this.responseText;
@@ -199,8 +206,8 @@
                 //是否允许提交重复的文件
                 isAllowSame: false,
 
-                //是否支持拖拽上传文件
-                isDrop: false,
+                //文件拖拽上传区域对象 null表示不支持
+                dropElement: null,
                 //文件拖拽dragenter事件回调
                 dragenter: function(){},
                 //文件拖拽dragleave事件回调
