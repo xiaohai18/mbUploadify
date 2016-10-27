@@ -12,8 +12,8 @@
             echo '图片格式不对！'; 
             exit; 
         } 
-        echo '服务器繁忙';
-        die();
+        //echo '服务器繁忙';
+        //die();
         $pics = 'pic'.rand(0, 10000).$type; 
         //上传路径 
         if(move_uploaded_file($files["tmp_name"], $pics)){
