@@ -65,7 +65,7 @@ var upload2 = new mbUploadify(document.querySelector('form'), {
 
 ##配置项
 
-构造函数 mbUploadify 的参数个数可选, 其中第二个参数配置项列表如下. 当只有一个form对象作参数时，系统会从form对象中查找file, url, uploadName配置项.
+构造函数 mbUploadify 的参数个数可选, 其中第二个参数配置项列表如下. 当只有一个form对象作参数时，系统会从form对象里面查找file, url, uploadName配置项.
 ```
 var upload = new mbUploadify(form, {
     //input file控件对象
