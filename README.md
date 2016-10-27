@@ -56,7 +56,7 @@ var upload = new mbUploadify({
 
 ```javascript
 var upload2 = new mbUploadify(document.querySelector('form'), {
-        /*是否支持拖拽上传文件*/
+        /*文件拖拽上传区域对象 null表示不支持拖拽上传*/
         dropElement: document.getElementById('j-dropArea'),
         ......
     });
